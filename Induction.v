@@ -512,7 +512,7 @@ Theorem mult_plus_distr_r : forall n m p : nat,
 Proof.
   intros n m p. induction n as [|n'].
   Case "n=0". reflexivity.
-  Case "n=Sn'". simpl. rewrite -> IHn'. rewrite <- plus_assoc.reflexivity.
+  Case "n=Sn'". simpl. rewrite -> IHn'. rewrite <- plus_assoc. reflexivity.
 Qed.
 
 
@@ -557,7 +557,7 @@ Proof.
   intros n m p. induction p as [|p'].
   Case "p=0". rewrite -> plus_0_r. rewrite -> plus_0_r. replace (m+n) with (n+m). reflexivity.
   (*m+n=n+m*) rewrite -> plus_comm. reflexivity. 
-  Case "p=Sp'". rewrite <- plus_n_Sm. rewrite <- plus_n_Sm.rewrite <- plus_n_Sm. rewrite <- plus_n_Sm. rewrite -> IHp'. reflexivity.
+  Case "p=Sp'". rewrite <- plus_n_Sm. rewrite <- plus_n_Sm. rewrite <- plus_n_Sm. rewrite <- plus_n_Sm. rewrite -> IHp'. reflexivity.
 Qed.
 
 
@@ -728,5 +728,5 @@ Proof.
 []
  *)
 
-(* $Date: 2013-07-17 16:19:11 -0400 (Wed, 17 Jul 2013) $ *)
-    context for the current goal.  When subgoals are generated, this
+(* $Date: 2013-07-17 16:19:11 -0400 (Wed, 17 Jul 2013) $ *)(*
+    context for the current goal.  When subgoals are generated, this*)

@@ -1021,9 +1021,10 @@ Fixpoint plus' (n : nat) (m : nat) : nat :=
     [Fixpoint] definition (of a simple function on numbers, say) that
     _does_ terminate on all inputs, but that Coq will _not_ accept
     because of this restriction. *)
-
+(*
 Fixpoint collatz (n:nat) :bool :=
   match n with
+*)
 (* FILL IN HERE *)
 (** [] *)
 
