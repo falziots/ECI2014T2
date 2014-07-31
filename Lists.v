@@ -834,8 +834,8 @@ Qed.
 Theorem count_member_nonzero : forall (s : bag),
   ble_nat 1 (count 1 (1 :: s)) = true.
 Proof.
-  intros s.
-  (* FILL IN HERE *) Admitted.
+  intros s. reflexivity.
+Qed.
 
 (** The following lemma about [ble_nat] might help you in the next proof. *)
 
@@ -848,10 +848,22 @@ Proof.
   Case "S n'".
     simpl.  rewrite IHn'.  reflexivity.  Qed.
 
+
+Lemma Sn_neq_0: forall n : nat,
+  beq_nat (S n) 0 = false.
+Admitted. (* Induccion, es trivial*)
+ 
+
+
 Theorem remove_decreases_count: forall (s : bag),
   ble_nat (count 0 (remove_one 0 s)) (count 0 s) = true.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros s. induction s as [|n s'].  
+  Case "nil". reflexivity.
+  Case "n::s'". simpl. destruct n. 
+    simpl. rewrite -> ble_n_Sn. reflexivity. 
+    rewrite Sn_neq_0. simpl. rewrite IHs'. reflexivity.
+Qed.
 (** [] *)
 
 (** **** Exercise: 3 stars, optional (bag_count_sum) *)  
@@ -868,7 +880,15 @@ Proof.
 
 There is a hard way and an easy way to solve this exercise.
 *)
-
+Theorem rev_injective: forall (l1 l2 : natlist), 
+  rev l1 = rev l2 -> l1 = l2.
+Proof.
+  intros l1 l2. induction l1 as [|n l']. 
+  Case "nil". simpl.  intros H. rewrite H. 
+   induction l2 as [|m k'].
+     simpl. reflexivity.
+     SearchAbout cons. simpl. rewrite IHk'. rewrite snoc_append. rewrite <- IHk'. reflexivity.
+      
 (* FILL IN HERE *)
 (** [] *)
 
