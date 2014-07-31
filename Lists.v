@@ -882,13 +882,15 @@ There is a hard way and an easy way to solve this exercise.
 *)
 Theorem rev_injective: forall (l1 l2 : natlist), 
   rev l1 = rev l2 -> l1 = l2.
+Admitted. 
+(*
 Proof.
   intros l1 l2. induction l1 as [|n l']. 
   Case "nil". simpl.  intros H. rewrite H. 
    induction l2 as [|m k'].
      simpl. reflexivity.
-     SearchAbout cons. simpl. rewrite IHk'. rewrite snoc_append. rewrite <- IHk'. reflexivity.
-      
+     SearchAbout cons. simpl. rewrite IHk'. rewrite snoc_append. rewrite <- IHk'.
+Abort.*)
 (* FILL IN HERE *)
 (** [] *)
 
@@ -971,7 +973,8 @@ Definition option_elim (d : nat) (o : natoption) : nat :=
    have to pass a default element for the [nil] case.  *)
 
 Definition hd_opt (l : natlist) : natoption :=
-  (* FILL IN HERE *) admit.
+  match l with 
+  | admit.
 
 Example test_hd_opt1 : hd_opt [] = None.
  (* FILL IN HERE *) Admitted.
