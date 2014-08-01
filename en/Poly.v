@@ -31,8 +31,6 @@ Inductive boollist : Type :=
     our list manipulating functions ([length], [rev], etc.)  for each
     new datatype definition. *)
 
-(** *** *)
-
 (** To avoid all this repetition, Coq supports _polymorphic_
     inductive type definitions.  For example, here is a _polymorphic
     list_ datatype. *)
@@ -40,7 +38,6 @@ Inductive boollist : Type :=
 Inductive list (X:Type) : Type :=
   | nil : list X
   | cons : X -> list X -> list X.
-
 
 (** This is exactly like the definition of [natlist] from the
     previous chapter, except that the [nat] argument to the [cons]
@@ -85,8 +82,6 @@ Check (cons nat 2 (cons nat 1 (nil nat))).
     versions of all the list-processing functions that we wrote
     before.  Here is [length], for example: *)
 
-(** *** *)
-
 Fixpoint length (X:Type) (l:list X) : nat :=
   match l with
   | nil      => 0
@@ -114,8 +109,6 @@ Example test_length2 :
     length bool (cons bool true (nil bool)) = 1.
 Proof. reflexivity.  Qed.
 
-
-(** *** *)
 (** Let's close this subsection by re-implementing a few other
     standard list functions on our new polymorphic lists: *)
 
@@ -163,13 +156,14 @@ Inductive grumble (X:Type) : Type :=
 
 (** Which of the following are well-typed elements of [grumble X] for
     some type [X]?
-      - [d (b a 5)]                
+      - [d (b a 5)]
       - [d mumble (b a 5)]
       - [d bool (b a 5)]
       - [e bool true]
-      - [e mumble (b c 0)]      
-      - [e bool (b c 0)]        NO
-      - [c]                     NO
+      - [e mumble (b c 0)]
+      - [e bool (b c 0)]
+      - [c] 
+(* FILL IN HERE *)
 [] *)
 
 
@@ -180,10 +174,8 @@ Inductive baz : Type :=
    | x : baz -> baz
    | y : baz -> bool -> baz.
 
-Check x.
-Check y.
 (** How _many_ elements does the type [baz] have? 
-0
+(* FILL IN HERE *)
 [] *)
 
 End MumbleBaz.
@@ -284,25 +276,20 @@ Definition list123' := cons _ 1 (cons _ 2 (cons _ 3 (nil _))).
     throughout our programs, we can tell Coq _always_ to infer the
     type argument(s) of a given function. The [Arguments] directive
     specifies the name of the function or constructor, and then lists
-    its argument names, with curly braces around any arguments to be
+    its argument names, with curly brackets around any arguments to be
     treated as implicit. 
     *)
 
-
-(* FALLA *)
-Implicit Arguments nil [[X]].
-Implicit Arguments cons [[X]].  (* use underscore for argument position that has no name *)
-Implicit Arguments length [[X]].
-Implicit Arguments app [[X]].
-Implicit Arguments rev [[X]]. 
-Implicit Arguments snoc [[X]].
-
+Arguments nil {X}.
+Arguments cons {X} _ _.  (* use underscore for argument position that has no name *)
+Arguments length {X} l.
+Arguments app {X} l1 l2.
+Arguments rev {X} l. 
+Arguments snoc {X} l v.
 
 (* note: no _ arguments required... *)
 Definition list123'' := cons 1 (cons 2 (cons 3 nil)).
 Check (length list123'').
-
-(** *** *)
 
 (** Alternatively, we can declare an argument to be implicit while
     defining the function itself, by surrounding the argument in curly
@@ -320,8 +307,6 @@ Fixpoint length'' {X:Type} (l:list X) : nat :=
     continue to use use explicit [Argument] declarations for
     [Inductive] constructors. *)
 
-(** *** *)
-
 (** One small problem with declaring arguments [Implicit] is
     that, occasionally, Coq does not have enough local information to
     determine a type argument; in such cases, we need to tell Coq that
@@ -329,7 +314,7 @@ Fixpoint length'' {X:Type} (l:list X) : nat :=
     we've globally declared it to be [Implicit].  For example, suppose we
     write this: *)
 
-(* Definition mynil := nil. *)
+(* Definition mynil := nil.  *)
 
 (** If we uncomment this definition, Coq will give us an error,
     because it doesn't know what type argument to supply to [nil].  We
@@ -346,7 +331,6 @@ Check @nil.
 
 Definition mynil' := @nil nat.
 
-(** *** *)
 (** Using argument synthesis and implicit arguments, we can
     define convenient notation for lists, as before.  Since we have
     made the constructor type arguments implicit, Coq will know to
@@ -363,7 +347,6 @@ Notation "x ++ y" := (app x y)
 
 Definition list123''' := [1; 2; 3].
 
-Check ([3 + 4] ++ nil).
 
 
 
@@ -377,51 +360,36 @@ Check ([3 + 4] ++ nil).
     and complete the proofs below. *)
 
 Fixpoint repeat {X : Type} (n : X) (count : nat) : list X :=
-  match count with
-  | 0 => nil
-  | S count' => n :: (repeat n count')
-  end.
+  (* FILL IN HERE *) admit.
 
 Example test_repeat1:
   repeat true 2 = cons true (cons true nil).
-  Proof. reflexivity. Qed.
+ (* FILL IN HERE *) Admitted.
 
 Theorem nil_app : forall X:Type, forall l:list X,
   app [] l = l.
 Proof.
-  reflexivity. 
-Qed.
-
+  (* FILL IN HERE *) Admitted.
 
 Theorem rev_snoc : forall X : Type,
                      forall v : X,
                      forall s : list X,
   rev (snoc s v) = v :: (rev s).
 Proof.
-  intros X v s. induction s as [|s']. 
-  Case "nil". reflexivity.
-  Case "s'::s". simpl. rewrite IHs. reflexivity.
-Qed. 
-
+  (* FILL IN HERE *) Admitted.
 
 Theorem rev_involutive : forall X : Type, forall l : list X,
   rev (rev l) = l.
 Proof.
-  intros X l. induction l as [|l'].
-  Case "nil". reflexivity.
-  Case "l'::l". simpl. rewrite rev_snoc. rewrite IHl. reflexivity.
-Qed.
-
+(* FILL IN HERE *) Admitted.
 
 Theorem snoc_with_append : forall X : Type,
                          forall l1 l2 : list X,
                          forall v : X,
   snoc (l1 ++ l2) v = l1 ++ (snoc l2 v).
 Proof.
-  intros X l1 l2 v. induction l1 as [|l'].
-  Case "nil". reflexivity.
-  Case "l'::l1". simpl. rewrite IHl1. reflexivity.
-Qed. 
+  (* FILL IN HERE *) Admitted.
+(** [] *)
 
 (* ###################################################### *)
 (** ** Polymorphic Pairs *)
@@ -433,7 +401,7 @@ Qed.
 Inductive prod (X Y : Type) : Type :=
   pair : X -> Y -> prod X Y.
 
-Implicit Arguments pair [[X] [Y]].
+Arguments pair {X} {Y} _ _.
 
 (** As with lists, we make the type arguments implicit and define the
     familiar concrete notation. *)
@@ -449,7 +417,6 @@ Notation "X * Y" := (prod X Y) : type_scope.
     should be used when parsing types.  This avoids a clash with the
     multiplication symbol.) *)
 
-(** *** *)
 (** A note of caution: it is easy at first to get [(x,y)] and
     [X*Y] confused.  Remember that [(x,y)] is a _value_ built from two
     other values; [X*Y] is a _type_ built from two other types.  If
@@ -487,9 +454,8 @@ Fixpoint combine {X Y : Type} (lx : list X) (ly : list Y)
       @combine] print?)
     - What does
         Eval compute in (combine [1;2] [false;false;true;true]).
-      print?   [(1, false), (2, false)]
+      print?   []
 *)
-
 
 (** **** Exercise: 2 stars (split) *)
 (** The function [split] is the right inverse of combine: it takes a
@@ -499,35 +465,15 @@ Fixpoint combine {X Y : Type} (lx : list X) (ly : list Y)
     Uncomment the material below and fill in the definition of
     [split].  Make sure it passes the given unit tests. *)
 
-Definition hd {X : Type} (l : list X) (default : X) : X :=
-  match l with
-  | nil => default
-  | h :: l' => h
-  end.
-
-Fixpoint split1 {X Y : Type} (l : list (X*Y)) : (list X) :=
-  match l with
-  | nil => nil 
-  | (x,y)::l' => x::(split1 l')
-  end.
-
-Fixpoint split2 {X Y : Type} (l : list (X*Y)) : (list Y) :=
-  match l with 
-  | nil => nil
-  | (x,y)::l' => y::(split2 l')
-  end.
-
 Fixpoint split
            {X Y : Type} (l : list (X*Y))
            : (list X) * (list Y) :=
-  match l with
-  | nil => (nil, nil)
-  | (x,y)::l' => (x::(split1 l'), y::(split2 l'))
-  end.
+(* FILL IN HERE *) admit.
 
 Example test_split:
   split [(1,false);(2,false)] = ([1;2],[false;false]).
-Proof. reflexivity. Qed.
+Proof.
+(* FILL IN HERE *) Admitted.
 (** [] *)
 
 (* ###################################################### *)
@@ -541,10 +487,9 @@ Inductive option (X:Type) : Type :=
   | Some : X -> option X
   | None : option X.
 
-Implicit Arguments Some [[X]].
-Implicit Arguments None [[X]].
+Arguments Some {X} _. 
+Arguments None {X}. 
 
-(** *** *)
 (** We can now rewrite the [index] function so that it works
     with any type of lists. *)
 
@@ -568,11 +513,7 @@ Proof. reflexivity.  Qed.
     passes the unit tests below. *)
 
 Definition hd_opt {X : Type} (l : list X)  : option X :=
-  match l with
-  | nil => None
-  | h :: l' => Some h
-  end.
-
+  (* FILL IN HERE *) admit.
 
 (** Once again, to force the implicit arguments to be explicit,
     we can use [@] before the name of the function. *)
@@ -580,10 +521,10 @@ Definition hd_opt {X : Type} (l : list X)  : option X :=
 Check @hd_opt.
 
 Example test_hd_opt1 :  hd_opt [1;2] = Some 1.
-Proof. reflexivity. Qed.
+ (* FILL IN HERE *) Admitted.
 Example test_hd_opt2 :   hd_opt  [[1];[2]]  = Some [1].
-Proof. reflexivity. Qed.
-
+ (* FILL IN HERE *) Admitted.
+(** [] *)
 
 (* ###################################################### *)
 (** * Functions as Data *)
@@ -672,25 +613,25 @@ Definition prod_curry {X Y Z : Type}
     the theorems below to show that the two are inverses. *)
 
 Definition prod_uncurry {X Y Z : Type}
-  (f : X -> Y -> Z) (p : X * Y) : Z := f (fst p) (snd p).
+  (f : X -> Y -> Z) (p : X * Y) : Z :=
+  (* FILL IN HERE *) admit.
 
 (** (Thought exercise: before running these commands, can you
-    calculate the types of [prod_curry] and [prod_uncurry]?)
-curry : (X * Y -> Z) -> X -> Y -> Z 
-uncurry : (X -> Y -> Z) -> X * Y -> Z
-*)
+    calculate the types of [prod_curry] and [prod_uncurry]?) *)
 
 Check @prod_curry.
 Check @prod_uncurry.
 
 Theorem uncurry_curry : forall (X Y Z : Type) (f : X -> Y -> Z) x y,
   prod_curry (prod_uncurry f) x y = f x y.
-Proof. reflexivity. Qed.
+Proof.
+  (* FILL IN HERE *) Admitted.
 
 Theorem curry_uncurry : forall (X Y Z : Type)
                                (f : (X * Y) -> Z) (p : X * Y),
   prod_uncurry (prod_curry f) p = f p.
-Proof. simpl. destruct p. reflexivity. Qed.
+Proof.
+  (* FILL IN HERE *) Admitted.
 (** [] *)
 
 (* ###################################################### *)
@@ -716,7 +657,6 @@ Fixpoint filter {X:Type} (test: X->bool) (l:list X)
 Example test_filter1: filter evenb [1;2;3;4] = [2;4].
 Proof. reflexivity.  Qed.
 
-(** *** *)
 Definition length_is_1 {X : Type} (l : list X) : bool :=
   beq_nat (length l) 1.
 
@@ -725,8 +665,6 @@ Example test_filter2:
            [ [1; 2]; [3]; [4]; [5;6;7]; []; [8] ]
   = [ [3]; [4]; [8] ].
 Proof. reflexivity.  Qed.
-
-(** *** *)
 
 (** We can use [filter] to give a concise version of the
     [countoddmembers] function from the [Lists] chapter. *)
@@ -777,16 +715,18 @@ Proof. reflexivity.  Qed.
     [filter_even_gt7] that takes a list of natural numbers as input
     and returns a list of just those that are even and greater than
     7. *)
+
 Definition filter_even_gt7 (l : list nat) : list nat :=
-  (filter (fun n => evenb n)) (filter (fun n => negb (ble_nat n 7)) l).
+  (* FILL IN HERE *) admit.
 
 Example test_filter_even_gt7_1 :
   filter_even_gt7 [1;2;6;9;10;3;12;8] = [10;12;8].
-Proof. reflexivity. Qed.
+ (* FILL IN HERE *) Admitted.
 
 Example test_filter_even_gt7_2 :
   filter_even_gt7 [5;2;6;19;129] = [].
-Proof. reflexivity. Qed.
+ (* FILL IN HERE *) Admitted.
+(** [] *)
 
 (** **** Exercise: 3 stars (partition) *)
 (** Use [filter] to write a Coq function [partition]:
@@ -803,12 +743,12 @@ Proof. reflexivity. Qed.
 
 Definition partition {X : Type} (test : X -> bool) (l : list X)
                      : list X * list X :=
-  (filter test l, filter (fun n => negb (test n)) l).
+(* FILL IN HERE *) admit.
 
 Example test_partition1: partition oddb [1;2;3;4;5] = ([1;3;5], [2;4]).
-Proof. reflexivity. Qed.
+(* FILL IN HERE *) Admitted.
 Example test_partition2: partition (fun x => false) [5;9;0] = ([], [5;9;0]).
-Proof. reflexivity. Qed.
+(* FILL IN HERE *) Admitted.
 (** [] *)
 
 (* ###################################################### *)
@@ -823,7 +763,6 @@ Fixpoint map {X Y:Type} (f:X->Y) (l:list X)
   | h :: t => (f h) :: (map f t)
   end.
 
-(** *** *)
 (** It takes a function [f] and a list [ l = [n1, n2, n3, ...] ]
     and returns the list [ [f n1, f n2, f n3,...] ], where [f] has
     been applied to each element of [l] in turn.  For example: *)
@@ -850,27 +789,15 @@ Proof. reflexivity.  Qed.
 
 
 
-(** ** Map for options *)
 (** **** Exercise: 3 stars (map_rev) *)
 (** Show that [map] and [rev] commute.  You may need to define an
     auxiliary lemma. *)
 
-Lemma snoc_map : forall (X Y : Type) (f : X -> Y) (l : list X) (n:X),
-  map f (snoc l n) = snoc (map f l) (f n).
-Proof.
-  intros X Y f l n. induction l as [|n' l'].
-  Case "nil". reflexivity.
-  Case "n'::l'". simpl. rewrite IHl'. reflexivity.
-Qed.
-
 
 Theorem map_rev : forall (X Y : Type) (f : X -> Y) (l : list X),
   map f (rev l) = rev (map f l).
-Proof. intros X Y f l. induction l as [|n l'].
-  Case "nil". reflexivity.
-  Case "n::l'". simpl. rewrite <- IHl'. rewrite snoc_map. reflexivity.
-Qed.
-
+Proof.
+  (* FILL IN HERE *) Admitted.
 (** [] *)
 
 (** **** Exercise: 2 stars (flat_map) *)
@@ -883,16 +810,14 @@ Qed.
       = [1; 2; 3; 5; 6; 7; 10; 11; 12].
 *)
 
-Fixpoint flat_map {X Y:Type} (f:X -> list Y) (l:list X) : (list Y) :=
-  match l with
-  | nil => nil
-  | n :: l' => (f n) ++ (flat_map f l')
-  end.
+Fixpoint flat_map {X Y:Type} (f:X -> list Y) (l:list X)
+                   : (list Y) :=
+  (* FILL IN HERE *) admit.
 
 Example test_flat_map1:
   flat_map (fun n => [n;n;n]) [1;5;4]
   = [1; 1; 1; 5; 5; 5; 4; 4; 4].
-Proof. reflexivity. Qed.
+ (* FILL IN HERE *) Admitted.
 (** [] *)
 
 (** Lists are not the only inductive type that we can write a
@@ -929,7 +854,6 @@ Fixpoint fold {X Y:Type} (f: X->Y->Y) (l:list X) (b:Y) : Y :=
   | h :: t => f h (fold f t b)
   end.
 
-(** *** *)
 
 (** Intuitively, the behavior of the [fold] operation is to
     insert a given binary operator [f] between every pair of elements
@@ -963,8 +887,6 @@ Proof. reflexivity. Qed.
     situation where it would be useful for [X] and [Y] to be
     different? *)
 
-
-
 (* ###################################################### *)
 (** ** Functions For Constructing Functions *)
 
@@ -988,7 +910,6 @@ Proof. reflexivity. Qed.
 Example constfun_example2 : (constfun 5) 99 = 5.
 Proof. reflexivity. Qed.
 
-(** *** *)
 (** Similarly, but a bit more interestingly, here is a function
     that takes a function [f] from numbers to some type [X], a number
     [k], and a value [x], and constructs a function that behaves
@@ -1004,8 +925,6 @@ Definition override {X: Type} (f: nat->X) (k:nat) (x:X) : nat->X:=
 
 Definition fmostlytrue := override (override ftrue 1 false) 3 false.
 
-(** *** *)
-
 Example override_example1 : fmostlytrue 0 = true.
 Proof. reflexivity. Qed.
 
@@ -1018,8 +937,6 @@ Proof. reflexivity. Qed.
 Example override_example4 : fmostlytrue 3 = false.
 Proof. reflexivity. Qed.
 
-(** *** *)
-
 (** **** Exercise: 1 star (override_example) *)
 (** Before starting to work on the following proof, make sure you
     understand exactly what the theorem is saying and can paraphrase
@@ -1027,7 +944,8 @@ Proof. reflexivity. Qed.
 
 Theorem override_example : forall (b:bool),
   (override (constfun b) 3 true) 2 = b.
-Proof. reflexivity. Qed.
+Proof.
+  (* FILL IN HERE *) Admitted.
 (** [] *)
 
 (** We'll use function overriding heavily in parts of the rest of the
@@ -1038,8 +956,6 @@ Proof. reflexivity. Qed.
     one very useful tactic that will also help us with proving
     properties of some of the other functions we have introduced in
     this chapter. *)
-
-(* ###################################################### *)
 
 (* ###################################################### *)
 (** * The [unfold] Tactic *)
@@ -1094,11 +1010,7 @@ Theorem override_neq : forall (X:Type) x1 x2 k1 k2 (f : nat->X),
   beq_nat k2 k1 = false ->
   (override f k2 x2) k1 = x1.
 Proof.
-  intros X x1 x2 k1 k2 f. 
-  unfold override.
-  intros H. rewrite H. intros J. rewrite J. reflexivity.
-Qed. 
-  
+  (* FILL IN HERE *) Admitted.
 (** [] *)
 
 (** As the inverse of [unfold], Coq also provides a tactic
@@ -1122,30 +1034,21 @@ Proof. reflexivity. Qed.
 
 Theorem fold_length_correct : forall X (l : list X),
   fold_length l = length l.
-Proof.
-  intros X l. induction l as [|n l'].
-  Case "nil". reflexivity.
-  Case "n::l'". simpl. unfold fold_length. simpl. rewrite <- IHl'. unfold fold_length. reflexivity.
-Qed. 
+(* FILL IN HERE *) Admitted. 
+(** [] *)
 
 (** **** Exercise: 3 stars (fold_map) *)
 (** We can also define [map] in terms of [fold].  Finish [fold_map]
     below. *)
 
 Definition fold_map {X Y:Type} (f : X -> Y) (l : list X) : list Y :=
-  fold (fun n => cons (f n))  l [].
+(* FILL IN HERE *) admit.
 
 (** Write down a theorem in Coq stating that [fold_map] is correct,
     and prove it. *)
 
-Theorem fold_map_correct : forall {X Y:Type} (f: X->Y) (l:list X),
-  fold_map f l = map f l.
-Proof.
-  intros X Y f l. induction l as [|n l'].
-  Case "nil". reflexivity.
-  Case "n::l'". simpl. unfold fold_map. simpl. rewrite <- IHl'. unfold fold_map. reflexivity.
-Qed.
+(* FILL IN HERE *)
+(** [] *)
 
-
-(* $Date: 2013-09-26 14:40:26 -0400 (Thu, 26 Sep 2013) $ *)
+(* $Date: 2013-07-17 16:19:11 -0400 (Wed, 17 Jul 2013) $ *)
 
