@@ -68,8 +68,8 @@ Theorem silly_ex :
      evenb 3 = true ->
      oddb 4 = true.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
+  intros eq1 eq2. apply eq1. apply eq2. 
+Qed.
 
 (** To use the [apply] tactic, the (conclusion of the) fact
     being applied must match the goal _exactly_ -- for example, [apply]
@@ -107,8 +107,11 @@ Theorem rev_exercise1 : forall (l l' : list nat),
      l = rev l' ->
      l' = rev l.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
+  intros l l' H. induction l as [|n l1].
+  Case "nil". simpl. rewrite H. induction l' as [|n l'1]. 
+              reflexivity.
+              simpl. simpl.
+Abort.
 
 (** **** Exercise: 1 star, optional (apply_rewrite) *)
 (** Briefly explain the difference between the tactics [apply] and
@@ -174,7 +177,8 @@ Example trans_eq_exercise : forall (n m o p : nat),
      (n + p) = m ->
      (n + p) = (minustwo o). 
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros m n o p eq1 eq2. rewrite eq2. apply eq1.
+Qed.
 (** [] *)
 
 
